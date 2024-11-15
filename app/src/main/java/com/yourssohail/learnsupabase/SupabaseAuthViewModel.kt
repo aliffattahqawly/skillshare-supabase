@@ -1,8 +1,8 @@
 package com.yourssohail.learnsupabase
 
 import android.content.Context
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yourssohail.learnsupabase.data.model.UserState
@@ -14,8 +14,8 @@ import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.coroutines.launch
 
 class SupabaseAuthViewModel : ViewModel() {
-    private val _userState = mutableStateOf<UserState>(UserState.Loading)
-    val userState: State<UserState> = _userState
+    private val _userState = MutableLiveData<UserState>(UserState.Loading)
+    val userState: LiveData<UserState> = _userState
 
     fun signUp(
         context: Context,
@@ -34,7 +34,6 @@ class SupabaseAuthViewModel : ViewModel() {
             } catch(e: Exception) {
                 _userState.value = UserState.Error(e.message ?: "")
             }
-
         }
     }
 
@@ -42,9 +41,8 @@ class SupabaseAuthViewModel : ViewModel() {
         viewModelScope.launch {
             val accessToken = client.gotrue.currentAccessTokenOrNull()
             val sharedPref = SharedPreferenceHelper(context)
-            sharedPref.saveStringData("accessToken",accessToken)
+            sharedPref.saveStringData("accessToken", accessToken)
         }
-
     }
 
     private fun getToken(context: Context): String? {
@@ -69,7 +67,6 @@ class SupabaseAuthViewModel : ViewModel() {
             } catch (e: Exception) {
                 _userState.value = UserState.Error(e.message ?: "")
             }
-
         }
     }
 
@@ -94,7 +91,7 @@ class SupabaseAuthViewModel : ViewModel() {
             try {
                 _userState.value = UserState.Loading
                 val token = getToken(context)
-                if(token.isNullOrEmpty()) {
+                if (token.isNullOrEmpty()) {
                     _userState.value = UserState.Success("User not logged in!")
                 } else {
                     client.gotrue.retrieveUser(token)
@@ -107,5 +104,4 @@ class SupabaseAuthViewModel : ViewModel() {
             }
         }
     }
-
 }
