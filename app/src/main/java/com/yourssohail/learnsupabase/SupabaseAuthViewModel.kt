@@ -17,11 +17,7 @@ class SupabaseAuthViewModel : ViewModel() {
     private val _userState = MutableLiveData<UserState>(UserState.Loading)
     val userState: LiveData<UserState> = _userState
 
-    fun signUp(
-        context: Context,
-        userEmail: String,
-        userPassword: String,
-    ) {
+    fun signUp(context: Context, userEmail: String, userPassword: String) {
         viewModelScope.launch {
             try {
                 _userState.value = UserState.Loading
@@ -31,8 +27,8 @@ class SupabaseAuthViewModel : ViewModel() {
                 }
                 saveToken(context)
                 _userState.value = UserState.Success("Registered successfully!")
-            } catch(e: Exception) {
-                _userState.value = UserState.Error(e.message ?: "")
+            } catch (e: Exception) {
+                _userState.value = UserState.Error(e.message ?: "An error occurred")
             }
         }
     }
@@ -50,11 +46,7 @@ class SupabaseAuthViewModel : ViewModel() {
         return sharedPref.getStringData("accessToken")
     }
 
-    fun login(
-        context: Context,
-        userEmail: String,
-        userPassword: String,
-    ) {
+    fun login(context: Context, userEmail: String, userPassword: String) {
         viewModelScope.launch {
             try {
                 _userState.value = UserState.Loading
@@ -65,7 +57,7 @@ class SupabaseAuthViewModel : ViewModel() {
                 saveToken(context)
                 _userState.value = UserState.Success("Logged in successfully!")
             } catch (e: Exception) {
-                _userState.value = UserState.Error(e.message ?: "")
+                _userState.value = UserState.Error(e.message ?: "An error occurred")
             }
         }
     }
@@ -79,14 +71,12 @@ class SupabaseAuthViewModel : ViewModel() {
                 sharedPref.clearPreferences()
                 _userState.value = UserState.Success("Logged out successfully!")
             } catch (e: Exception) {
-                _userState.value = UserState.Error(e.message ?: "")
+                _userState.value = UserState.Error(e.message ?: "An error occurred")
             }
         }
     }
 
-    fun isUserLoggedIn(
-        context: Context,
-    ) {
+    fun isUserLoggedIn(context: Context) {
         viewModelScope.launch {
             try {
                 _userState.value = UserState.Loading

@@ -87,4 +87,6 @@ dependencies {
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 
+    implementation ("io.github.jan-tennert.supabase:storage-kt:1.3.2")
+
 }
